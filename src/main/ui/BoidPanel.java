@@ -1,6 +1,7 @@
 package main.ui;
 
 import main.model.Boid;
+import main.model.BoidType;
 import main.simulation.FlockSimulation;
 import main.spatial.*;
 import javax.swing.*;
@@ -17,8 +18,10 @@ public class BoidPanel extends JPanel implements ActionListener {
     private final JSlider boidCountSlider;
     private final JSlider radiusSlider;
     private final JButton playPauseButton;
+    private final JButton addPredatorButton;
     private final JComboBox<SpatialIndexOption> spatialIndexCombo;
     private final JLabel performanceLabel;
+    private final JLabel predatorCountLabel;
     
     private static final int PANEL_WIDTH = 1000;
     private static final int PANEL_HEIGHT = 700;
@@ -73,7 +76,14 @@ public class BoidPanel extends JPanel implements ActionListener {
         
         playPauseButton = new JButton("Start");
         playPauseButton.addActionListener(e -> togglePlayPause());
-        
+
+        addPredatorButton = new JButton("Add Predator");
+        addPredatorButton.addActionListener(e -> {
+            simulation.addBoid(BoidType.PREDATOR);
+        });
+
+        predatorCountLabel = new JLabel("Predators: 0");
+
         SpatialIndexOption[] spatialOptions = {
             new SpatialIndexOption("Naive O(n²)", new NaiveSpatialIndex()),
             new SpatialIndexOption("KD-Tree", new KDTreeSpatialIndex()),
@@ -99,9 +109,11 @@ public class BoidPanel extends JPanel implements ActionListener {
         controlPanel.add(new JLabel("Radius:"));
         controlPanel.add(radiusSlider);
         controlPanel.add(playPauseButton);
+        controlPanel.add(addPredatorButton);
+        controlPanel.add(predatorCountLabel);
         controlPanel.add(spatialIndexCombo);
         controlPanel.add(performanceLabel);
-        
+
         add(controlPanel, BorderLayout.SOUTH);
     }
 
@@ -125,8 +137,10 @@ public class BoidPanel extends JPanel implements ActionListener {
     }
     
     private void updateLabels() {
-        performanceLabel.setText(String.format("Iteration time: %.2f ms", 
+        performanceLabel.setText(String.format("Iteration time: %.2f ms",
             simulation.getLastIterationTimeMs()));
+        predatorCountLabel.setText(String.format("Predators: %d",
+            simulation.getCountByType(BoidType.PREDATOR)));
     }
 
     @Override

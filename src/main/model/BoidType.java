@@ -3,7 +3,8 @@ package main.model;
 import java.awt.Color;
 
 public enum BoidType {
-    STANDARD(Color.WHITE);
+    STANDARD(Color.WHITE),
+    PREDATOR(Color.RED);
 
     private final Color color;
 
